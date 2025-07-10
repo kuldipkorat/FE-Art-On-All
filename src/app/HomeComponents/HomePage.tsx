@@ -143,33 +143,6 @@ const HomePage: FC = () => {
           </div>
         </div>
       </section>
-
-      {/* Top Picks */}
-      <section className="bg-gray-800 py-10 px-4">
-        <h2 className="text-center text-2xl font-semibold mb-6">TOP PICKS</h2>
-        <p className="text-center mb-8">
-          One print 4 options - Enhance your space with style
-        </p>
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
-          {["captain", "abstract", "fairy", "spacechick", "colourchild"].map(
-            (name, index) => (
-              <div key={index} className="text-center">
-                <Image
-                  src={`/${name}.jpg`}
-                  alt={name}
-                  width={200}
-                  height={250}
-                  className="mx-auto"
-                />
-                <p className="mt-2 capitalize">
-                  {name.replace(/([a-z])([A-Z])/g, "$1 $2")}
-                </p>
-                <p className="text-sm">From £20</p>
-              </div>
-            )
-          )}
-        </div>
-      </section>
     </main>
   );
 };

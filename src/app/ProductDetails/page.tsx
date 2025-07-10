@@ -1,0 +1,282 @@
+"use client";
+
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState, useRef } from "react";
+import { ImageBaseUrl } from "../Api";
+import { AiOutlineHeart } from "react-icons/ai";
+import { FiZoomIn } from "react-icons/fi";
+import { TbAugmentedReality } from "react-icons/tb";
+
+interface Product {
+  _id: number | string;
+  product_name: string;
+  product_price: number | string;
+  product_image_1: string;
+  product_image_2: string;
+  product_image_3: string;
+  product_image_4: string;
+}
+
+const ProductDetails = () => {
+  const searchParams = useSearchParams();
+  const [product, setProduct] = useState<Product | null>(null);
+  const [selectedColor, setSelectedColor] = useState("#E5CFC6");
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [quantity, setQuantity] = useState(1);
+  const imageRef = useRef<HTMLImageElement>(null);
+
+  const frameColors = [
+    "#E5CFC6", "#E5E5E5", "#000000",
+    "#FFFFFF", "#F3D7CA", "#FAF1E4",
+  ];
+
+  useEffect(() => {
+    const productParam = searchParams.get("product");
+    if (productParam) {
+      try {
+        const parsedProduct = JSON.parse(decodeURIComponent(productParam));
+        setProduct(parsedProduct);
+        setSelectedImage(parsedProduct.product_image_1);
+      } catch (err) {
+        console.error("Invalid product data:", err);
+      }
+    }
+  }, [searchParams]);
+
+  const handleZoomClick = () => {
+    if (imageRef.current) {
+      if (imageRef.current.requestFullscreen) {
+        imageRef.current.requestFullscreen();
+      } else if ((imageRef.current as any).webkitRequestFullscreen) {
+        (imageRef.current as any).webkitRequestFullscreen();
+      } else if ((imageRef.current as any).mozRequestFullScreen) {
+        (imageRef.current as any).mozRequestFullScreen();
+      } else if ((imageRef.current as any).msRequestFullscreen) {
+        (imageRef.current as any).msRequestFullscreen();
+      }
+    }
+  };
+
+  if (!product) {
+    return (
+      <div className="min-h-screen flex justify-center items-center text-gray-600">
+        Loading product details...
+      </div>
+    );
+  }
+
+  const productImages = [
+    product.product_image_1,
+    product.product_image_2,
+    product.product_image_3,
+    product.product_image_4,
+  ].filter(Boolean);
+
+  return (
+    <div className="min-h-screen px-4 md:px-8 lg:px-12 py-8 bg-white">
+      <div className="flex flex-col lg:flex-row gap-10">
+        {/* Left: Image Section */}
+        <div className="w-full lg:w-3/4 flex flex-col sm:flex-row gap-4 bg-[#E1E2E6] p-4 sm:p-6 rounded-md relative">
+          {/* Thumbnails */}
+          <div className="flex sm:flex-col gap-2 sm:gap-3 overflow-x-auto sm:overflow-visible">
+            {productImages.map((img, idx) => (
+              <div
+                key={idx}
+                onClick={() => setSelectedImage(img!)}
+                className={`w-16 h-16 border-3 rounded-xl overflow-hidden cursor-pointer p-1 ${
+                  selectedImage === img ? "border-3 border-blue-600" : ""
+                }`}
+              >
+                <img
+                  src={`${ImageBaseUrl}${img}`}
+                  alt={`Thumbnail ${idx}`}
+                  className="w-full h-full object-cover rounded-xl"
+                />
+              </div>
+            ))}
+          </div>
+
+          {/* Main Image */}
+          <div className="relative flex-1 flex xl:items-center justify-center">
+            <img
+              ref={imageRef}
+              src={`${ImageBaseUrl}${selectedImage}`}
+              alt={product.product_name}
+              className="max-w-full max-h-[400px] sm:max-h-[500px] object-contain rounded-md"
+            />
+
+            {/* Floating Buttons (Desktop) */}
+            <div className="hidden md:flex absolute top-4 right-4 flex-col gap-3 z-10">
+              <button className="w-10 h-10 rounded-full cursor-pointer bg-white shadow- hover:bg-gray-100 flex items-center justify-center">
+                <AiOutlineHeart className="text-xl" />
+              </button>
+              <button
+                onClick={handleZoomClick}
+                className="w-10 h-10 rounded-full cursor-pointer bg-white shadow hover:bg-gray-100 flex items-center justify-center"
+              >
+                <FiZoomIn className="text-xl" />
+              </button>
+              <button className="w-10 h-10 rounded-full cursor-pointer bg-white shadow hover:bg-gray-100 flex items-center justify-center">
+                <TbAugmentedReality className="text-xl" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Floating Buttons (Mobile) */}
+        <div className="flex md:hidden justify-center gap-4 mb-4">
+          <button className="w-10 h-10 rounded-full bg-white shadow-[#cccc] shadow-xl hover:bg-gray-100 flex items-center justify-center">
+            <AiOutlineHeart className="text-xl" />
+          </button>
+          <button
+            onClick={handleZoomClick}
+            className="w-10 h-10 rounded-full bg-white shadow-[#cccc] shadow-xl hover:bg-gray-100 flex items-center justify-center"
+          >
+            <FiZoomIn className="text-xl" />
+          </button>
+          <button className="w-10 h-10 rounded-full bg-white shadow-[#cccc] shadow-xl hover:bg-gray-100 flex items-center justify-center">
+            <TbAugmentedReality className="text-xl" />
+          </button>
+        </div>
+
+        {/* Right: Product Info */}
+        <div className="w-full lg:w-1/2">
+          <h1 className="text-2xl sm:text-3xl font-bold mb-3">
+            {product.product_name}
+          </h1>
+
+          {/* Priority Production */}
+          <div className="bg-[#0502F1] text-white p-5 rounded-md mb-5">
+            <div className="flex justify-between items-center flex-wrap gap-4">
+              <div>
+                <h1 className="text-2xl font-semibold">Priority Production</h1>
+                <button className="mt-2 bg-white text-black px-6 py-2 rounded-full font-semibold">
+                  BUY NOW
+                </button>
+              </div>
+              <div className="text-right">
+                <p className="text-sm">Be Smart Skip the Wait</p>
+                <h1 className="text-3xl font-bold my-1">03H : 00M</h1>
+                <p className="text-sm">Priority Production Ends in...</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Price */}
+          <div className="text-2xl font-bold text-gray-800 mb-5">
+            £{product.product_price}
+          </div>
+
+          {/* Material Selection */}
+          <div className="mb-5">
+            <p className="font-medium mb-2">Material:</p>
+            <div className="flex gap-2 flex-wrap">
+              {["Acrylic", "Mirror", "Wood", "Metal", "Canvas"].map((mat) => (
+                <button
+                  key={mat}
+                  className={`px-4 py-1 rounded border ${
+                    mat === "Acrylic"
+                      ? "bg-black text-white"
+                      : "bg-gray-100 text-gray-700"
+                  }`}
+                >
+                  {mat}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Size Selection */}
+          <div className="mb-5">
+            <p className="font-medium mb-2">Size:</p>
+            <div className="flex gap-2 flex-wrap">
+              {[
+                "Small 200 × 300mm",
+                "Medium 400 × 600mm",
+                "Large 600 × 900mm",
+                "XLarge 800 × 1200mm",
+              ].map((size, idx) => (
+                <button
+                  key={idx}
+                  className={`px-4 py-1 rounded border ${
+                    idx === 0
+                      ? "bg-black text-white"
+                      : "bg-gray-100 text-gray-700"
+                  }`}
+                >
+                  {size}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Frame Border Colors */}
+          <div className="mb-5">
+            <p className="font-medium mb-2">Frame Border:</p>
+            <div className="flex flex-wrap gap-2">
+              {frameColors.map((color) => (
+                <button
+                  key={color}
+                  onClick={() => setSelectedColor(color)}
+                  style={{ backgroundColor: color }}
+                  className={`w-8 h-8 rounded border-2 ${
+                    selectedColor === color
+                      ? "border-black"
+                      : "border-gray-300"
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Quantity */}
+          <div className="flex items-center gap-4 mb-6">
+            <p className="font-medium">Quantity:</p>
+            <div className="flex items-center border rounded">
+              <button
+                onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                className="px-3 py-1 text-xl border-r"
+              >
+                -
+              </button>
+              <input
+                type="number"
+                value={quantity}
+                onChange={(e) =>
+                  setQuantity(Math.max(1, parseInt(e.target.value) || 1))
+                }
+                className="w-12 text-center outline-none"
+              />
+              <button
+                onClick={() => setQuantity((q) => q + 1)}
+                className="px-3 py-1 text-xl border-l"
+              >
+                +
+              </button>
+            </div>
+          </div>
+
+          {/* Buttons */}
+          <button className="w-full bg-black text-white py-3 rounded-md mb-3 hover:bg-gray-800 transition">
+            Add to Cart
+          </button>
+          <button className="w-full bg-indigo-600 text-white py-3 rounded-md hover:bg-indigo-700 transition">
+            Buy with ShopPay
+          </button>
+
+          {/* Payment Icons */}
+          <div className="mt-6 text-sm text-gray-600 flex gap-4 flex-wrap">
+            <span>Visa</span>
+            <span>Mastercard</span>
+            <span>PayPal</span>
+            <span>Amex</span>
+            <span>GPay</span>
+            <span>ApplePay</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ProductDetails;
