@@ -6,7 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { FaArrowRight } from "react-icons/fa";
 import { GetAllProductAPI, ImageBaseUrl } from "../Api";
-import ArtWork from "../../../public/Home/art_work.png"
+import ArtWork from "../../../public/Home/art_work.png";
 
 interface Product {
   _id: number | string;
@@ -42,9 +42,9 @@ const LatestDesigns: React.FC = () => {
     <section className="bg-[#1F2532] py-12 px-4 text-white">
       <h2 className="text-center text-3xl font-bold mb-10">LATEST DESIGNS</h2>
 
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[250px_1fr] gap-8">
-        {/* Left Banner */}
-        <div className="bg-gradient-to-b from-blue-500 to-purple-600 rounded-lg overflow-hidden text-center ">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[250px_1fr] gap-8">
+        {/* Left Banner - only visible on lg and above */}
+        <div className="hidden lg:block bg-gradient-to-b from-blue-500 to-purple-600 rounded-lg overflow-hidden text-center">
           <Image
             src={ArtWork}
             alt="Braille Artwork"
@@ -59,7 +59,7 @@ const LatestDesigns: React.FC = () => {
         </div>
 
         {/* Product Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {products.length > 0 ? (
             products.map((product) => (
               <Link
