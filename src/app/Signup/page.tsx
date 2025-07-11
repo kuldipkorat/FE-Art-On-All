@@ -75,7 +75,7 @@ export default function SignUp() {
 
             <button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-semibold transition"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-semibold transition cursor-pointer"
             >
               Sign Up
             </button>
@@ -88,7 +88,7 @@ export default function SignUp() {
 
             <button
               type="button"
-              className="w-full border border-gray-600 text-white flex items-center justify-center gap-2 py-2 rounded hover:bg-gray-800 transition"
+              className="w-full border border-gray-600 text-white flex items-center justify-center gap-2 py-2 rounded hover:bg-gray-800 transition cursor-pointer"
             >
               <FcGoogle className="text-xl" />
               Continue with Google
