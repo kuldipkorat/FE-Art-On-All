@@ -7,6 +7,8 @@ import { AiOutlineHeart } from "react-icons/ai";
 import { FiZoomIn } from "react-icons/fi";
 import { TbAugmentedReality } from "react-icons/tb";
 
+import ModelViewer from "../HomeComponents/ModelViewer";
+
 interface Product {
   _id: number | string;
   product_name: string;
@@ -26,9 +28,17 @@ const ProductDetails = () => {
   const [imageSize, setImageSize] = useState("medium");
   const [imageShape, setImageShape] = useState("square");
   const [selectedMaterial, setSelectedMaterial] = useState("Acrylic");
+  const [show3DView, setShow3DView] = useState(false);
   const imageRef = useRef<HTMLImageElement>(null);
 
-  const frameColors = ["#E5CFC6", "#E5E5E5", "#000000", "#FFFFFF", "#F3D7CA", "#FAF1E4"];
+  const frameColors = [
+    "#E5CFC6",
+    "#E5E5E5",
+    "#000000",
+    "#FFFFFF",
+    "#F3D7CA",
+    "#FAF1E4",
+  ];
   const materials = ["Acrylic", "Mirror", "Wood", "Metal", "Canvas"];
 
   useEffect(() => {
@@ -46,7 +56,8 @@ const ProductDetails = () => {
 
   const handleZoomClick = () => {
     if (imageRef.current) {
-      if (imageRef.current.requestFullscreen) imageRef.current.requestFullscreen();
+      if (imageRef.current.requestFullscreen)
+        imageRef.current.requestFullscreen();
       else if ((imageRef.current as any).webkitRequestFullscreen)
         (imageRef.current as any).webkitRequestFullscreen();
       else if ((imageRef.current as any).mozRequestFullScreen)
@@ -81,7 +92,10 @@ const ProductDetails = () => {
             {productImages.map((img, idx) => (
               <div
                 key={idx}
-                onClick={() => setSelectedImage(img!)}
+                onClick={() => {
+                  setSelectedImage(img!);
+                  setShow3DView(false);
+                }}
                 className={`w-16 h-16 border-3 rounded-xl overflow-hidden cursor-pointer p-1 ${
                   selectedImage === img ? "border-3 border-blue-600" : ""
                 }`}
@@ -95,32 +109,44 @@ const ProductDetails = () => {
             ))}
           </div>
 
-          {/* Main Image */}
+          {/* Main Image or 3D View */}
           <div className="relative flex-1 flex xl:items-center justify-center">
-            <img
-              ref={imageRef}
-              src={`${ImageBaseUrl}${selectedImage}`}
-              alt={product.product_name}
-              className={`object-cover rounded-md ${
-                imageSize === "small"
-                  ? "max-w-[200px] max-h-[300px]"
-                  : imageSize === "medium"
-                  ? "max-w-[400px] max-h-[600px]"
-                  : imageSize === "large"
-                  ? "max-w-[600px] max-h-[900px]"
-                  : "max-w-[800px] max-h-[1200px]"
-              } ${
-                imageShape === "square"
-                  ? "aspect-square"
-                  : imageShape === "rectangle"
-                  ? "aspect-[4/3]"
-                  : imageShape === "panorama"
-                  ? "aspect-[16/9]"
-                  : ""
-              }`}
-            />
+            {show3DView ? (
+              <ModelViewer modelPath="/Home/black_frame_acrylic.glb" />
+            ) : (
+              <div className="relative inline-block">
+                <img
+                  ref={imageRef}
+                  src={`${ImageBaseUrl}${selectedImage}`}
+                  alt={product.product_name}
+                  className={`object-cover rounded-md ${
+                    imageSize === "small"
+                      ? "max-w-[200px] max-h-[300px]"
+                      : imageSize === "medium"
+                      ? "max-w-[400px] max-h-[600px]"
+                      : imageSize === "large"
+                      ? "max-w-[600px] max-h-[900px]"
+                      : "max-w-[800px] max-h-[1200px]"
+                  } ${
+                    imageShape === "square"
+                      ? "aspect-square"
+                      : imageShape === "rectangle"
+                      ? "aspect-[4/3]"
+                      : imageShape === "panorama"
+                      ? "aspect-[16/9]"
+                      : imageShape === "panoramaWide"
+                      ? "aspect-[10/16]"
+                      : ""
+                  }`}
+                  style={{
+                    border: `10px solid ${selectedColor}`,
+                    boxSizing: "border-box",
+                  }}
+                />
+              </div>
+            )}
 
-            {/* Floating Buttons Desktop */}
+            {/* Floating Buttons */}
             <div className="hidden md:flex absolute top-4 right-4 flex-col gap-3 z-10">
               <button className="w-10 h-10 rounded-full bg-white shadow hover:bg-gray-100 flex items-center justify-center">
                 <AiOutlineHeart className="text-xl" />
@@ -131,7 +157,10 @@ const ProductDetails = () => {
               >
                 <FiZoomIn className="text-xl" />
               </button>
-              <button className="w-10 h-10 rounded-full bg-white shadow hover:bg-gray-100 flex items-center justify-center">
+              <button
+                onClick={() => setShow3DView(!show3DView)}
+                className="w-10 h-10 rounded-full bg-white shadow hover:bg-gray-100 flex items-center justify-center"
+              >
                 <TbAugmentedReality className="text-xl" />
               </button>
             </div>
@@ -140,9 +169,30 @@ const ProductDetails = () => {
 
         {/* Right Section */}
         <div className="w-full lg:w-1/2">
-          <h1 className="text-2xl sm:text-3xl font-bold mb-3">{product.product_name}</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold mb-3">
+            {product.product_name}
+          </h1>
 
-          <div className="text-2xl font-bold text-gray-800 mb-5">£{product.product_price}</div>
+          {/* Priority Production */}
+          <div className="bg-[#0502F1] text-white p-5 rounded-md mb-5">
+            <div className="flex justify-between items-center flex-wrap gap-4">
+              <div>
+                <h1 className="text-2xl font-semibold">Priority Production</h1>
+                <button className="mt-2 bg-white text-black px-6 py-2 rounded-full font-semibold">
+                  BUY NOW
+                </button>
+              </div>
+              <div className="text-right">
+                <p className="text-sm">Be Smart Skip the Wait</p>
+                <h1 className="text-3xl font-bold my-1">03H : 00M</h1>
+                <p className="text-sm">Priority Production Ends in...</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="text-2xl font-bold text-gray-800 mb-5">
+            £{product.product_price}
+          </div>
 
           {/* Material Selection */}
           <div className="mb-5">
@@ -192,18 +242,24 @@ const ProductDetails = () => {
           {/* Shape Selection */}
           <div className="mb-5">
             <p className="font-medium mb-2">Image Shape:</p>
-            <div className="flex gap-4 flex-wrap">
-              {["square", "rectangle", "panorama"].map((shape) => (
-                <label key={shape} className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="shape"
-                    value={shape}
-                    checked={imageShape === shape}
-                    onChange={() => setImageShape(shape)}
-                  />
-                  {shape.charAt(0).toUpperCase() + shape.slice(1)}
-                </label>
+            <div className="flex gap-2 flex-wrap">
+              {[
+                { label: "Square", value: "square" },
+                { label: "Rectangle", value: "rectangle" },
+                { label: "Panorama", value: "panorama" },
+                { label: "PanoramaWide", value: "panoramaWide" },
+              ].map((shape) => (
+                <button
+                  key={shape.value}
+                  onClick={() => setImageShape(shape.value)}
+                  className={`px-4 py-1 rounded border ${
+                    imageShape === shape.value
+                      ? "bg-black text-white"
+                      : "bg-gray-100 text-gray-700"
+                  }`}
+                >
+                  {shape.label}
+                </button>
               ))}
             </div>
           </div>
@@ -252,7 +308,6 @@ const ProductDetails = () => {
             </div>
           </div>
 
-          {/* Buttons */}
           <button className="w-full bg-black text-white py-3 rounded-md mb-3 hover:bg-gray-800 transition">
             Add to Cart
           </button>
@@ -260,7 +315,6 @@ const ProductDetails = () => {
             Buy with ShopPay
           </button>
 
-          {/* Payment Options */}
           <div className="mt-6 text-sm text-gray-600 flex gap-4 flex-wrap">
             <span>Visa</span>
             <span>Mastercard</span>
