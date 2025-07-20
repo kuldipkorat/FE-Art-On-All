@@ -3,33 +3,55 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import { ImageBaseUrl } from "../Api";
-import { AiOutlineHeart } from "react-icons/ai";
-import { FiZoomIn } from "react-icons/fi";
-import { TbAugmentedReality } from "react-icons/tb";
 
-import ModelViewer from "../HomeComponents/ModelViewer";
+// import CanvasImageComposer from "../HomeComponents/CanvasImageComposer";
+import OfficeImage from "../../../public/Home/office_view.avif";
+import LivingRoomImage from "../../../public/Home/living_room.avif";
+import StudyRoomImage from "../../../public/Home/study_room.avif";
+// import ThreeImageViewer from "../HomeComponents/ThreeImageViewer";
+
+import { AiOutlineHeart } from "react-icons/ai";
+import { FiZoomIn, FiPlus } from "react-icons/fi";
+import { TbAugmentedReality } from "react-icons/tb";
+import { FiMinus } from "react-icons/fi";
+
+import Shopify from "../../../public/Product/shopify.png";
+import Visa from "../../../public/Product/visa.png";
+import Rupay from "../../../public/Product/rupay.png";
+import PayPal from "../../../public/Product/paypal.png";
+import Ipay from "../../../public/Product/ipay.png";
+import Gpay from "../../../public/Product/gpay.png";
+
+import Links from "../../../public/Product/link.png"
+import Meta from "../../../public/Product/meta.png"
+import Twitter from "../../../public/Product/twitter.png"
+import Pintrest from "../../../public/Product/social.png"
+import LinkedIn from "../../../public/Product/linkedin.png"
+
+import dynamic from "next/dynamic";
+const ThreeImageViewer = dynamic(() => import("../HomeComponents/ThreeImageViewer"), { ssr: false });
+const CanvasImageComposer = dynamic(() => import("../HomeComponents/CanvasImageComposer"), { ssr: false });
 
 interface Product {
   _id: number | string;
   product_name: string;
   product_price: number | string;
   product_image_1: string;
-  product_image_2: string;
-  product_image_3: string;
-  product_image_4: string;
 }
 
 const ProductDetails = () => {
   const searchParams = useSearchParams();
   const [product, setProduct] = useState<Product | null>(null);
+  const [selectedBackground, setSelectedBackground] = useState<string>("");
+  const [showCanvas, setShowCanvas] = useState<boolean>(false);
   const [selectedColor, setSelectedColor] = useState("#E5CFC6");
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
-  const [imageSize, setImageSize] = useState("medium");
-  const [imageShape, setImageShape] = useState("square");
   const [selectedMaterial, setSelectedMaterial] = useState("Acrylic");
-  const [show3DView, setShow3DView] = useState(false);
-  const imageRef = useRef<HTMLImageElement>(null);
+  const [selectedSize, setSelectedSize] = useState("Small 200 x 300mm");
+  const [imageShape, setImageShape] = useState("Square");
+  const imageRef = useRef<HTMLDivElement>(null);
+  const canvasContainerRef = useRef<HTMLDivElement>(null);
+  const [canvasSize, setCanvasSize] = useState({ width: 800, height: 500 });
 
   const frameColors = [
     "#E5CFC6",
@@ -39,7 +61,18 @@ const ProductDetails = () => {
     "#F3D7CA",
     "#FAF1E4",
   ];
-  const materials = ["Acrylic", "Mirror", "Wood", "Metal", "Canvas"];
+
+  const materials = ["Acrylic", "Wood", "Metal", "Canvas", "Mirror"];
+
+  const imagesize = ["Small 200 x 300mm", "Medium 400 x 600mm", "Large 600 x 900mm", "XLarge 800 x 1200mm"];
+
+  const imageShapes = [
+    { label: "Square", value: "Square" },
+    { label: "Column", value: "Column" },
+    { label: "Landscape", value: "Landscape" },
+    { label: "Panoramic", value: "Panoramic" },
+    { label: "Portrait", value: "Portrait" },
+  ];
 
   useEffect(() => {
     const productParam = searchParams.get("product");
@@ -47,23 +80,29 @@ const ProductDetails = () => {
       try {
         const parsedProduct = JSON.parse(decodeURIComponent(productParam));
         setProduct(parsedProduct);
-        setSelectedImage(parsedProduct.product_image_1);
       } catch (err) {
         console.error("Invalid product data:", err);
       }
     }
   }, [searchParams]);
 
+  useEffect(() => {
+    if (!canvasContainerRef.current) return;
+    const observer = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        const { width } = entry.contentRect;
+        const calculatedHeight = (width * 3) / 4;
+        setCanvasSize({ width, height: calculatedHeight });
+      }
+    });
+    observer.observe(canvasContainerRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   const handleZoomClick = () => {
     if (imageRef.current) {
       if (imageRef.current.requestFullscreen)
         imageRef.current.requestFullscreen();
-      else if ((imageRef.current as any).webkitRequestFullscreen)
-        (imageRef.current as any).webkitRequestFullscreen();
-      else if ((imageRef.current as any).mozRequestFullScreen)
-        (imageRef.current as any).mozRequestFullScreen();
-      else if ((imageRef.current as any).msRequestFullscreen)
-        (imageRef.current as any).msRequestFullscreen();
     }
   };
 
@@ -75,110 +114,114 @@ const ProductDetails = () => {
     );
   }
 
-  const productImages = [
-    product.product_image_1,
-    product.product_image_2,
-    product.product_image_3,
-    product.product_image_4,
-  ].filter(Boolean);
+  const backgroundImages = [
+    { label: "Living Room", src: LivingRoomImage.src },
+    { label: "Office", src: OfficeImage.src },
+    { label: "Study Room", src: StudyRoomImage.src },
+  ];
 
   return (
     <div className="min-h-screen px-4 md:px-8 lg:px-12 py-8 bg-white">
       <div className="flex flex-col lg:flex-row gap-10">
         {/* Left Section */}
-        <div className="w-full lg:w-3/4 flex flex-col sm:flex-row gap-4 bg-[#E1E2E6] p-4 sm:p-6 rounded-md relative">
-          {/* Thumbnails */}
-          <div className="flex sm:flex-col gap-2 sm:gap-3 overflow-x-auto sm:overflow-visible">
-            {productImages.map((img, idx) => (
+        <div
+          ref={imageRef}
+          className="w-full h-full lg:min-w-4xl flex-1 flex xl:justify-center xl:items-start flex-col-reverse xl:flex-row relative bg-[#10111a] rounded-md p-4 gap-6"
+        >
+          <div className="flex xl:flex-col gap-2 overflow-x-auto sm:overflow-visible">
+            <div
+              onClick={() => {
+                setShowCanvas(false);
+                setSelectedBackground("");
+              }}
+              className={`w-16 h-16 border-2 rounded-xl overflow-hidden cursor-pointer p-1 ${
+                !showCanvas ? "border-blue-600" : "border-transparent"
+              }`}
+            >
+              <img
+                src={`${ImageBaseUrl}${product.product_image_1}`}
+                alt="Product"
+                className="w-full h-full object-cover rounded-xl"
+              />
+            </div>
+            {backgroundImages.map((bg, idx) => (
               <div
                 key={idx}
                 onClick={() => {
-                  setSelectedImage(img!);
-                  setShow3DView(false);
+                  setShowCanvas(true);
+                  setSelectedBackground(bg.src);
                 }}
-                className={`w-16 h-16 border-3 rounded-xl overflow-hidden cursor-pointer p-1 ${
-                  selectedImage === img ? "border-3 border-blue-600" : ""
+                className={`w-16 h-16 border-2 rounded-xl overflow-hidden cursor-pointer p-1 ${
+                  selectedBackground === bg.src
+                    ? "border-blue-600"
+                    : "border-transparent"
                 }`}
               >
                 <img
-                  src={`${ImageBaseUrl}${img}`}
-                  alt={`Thumbnail ${idx}`}
+                  src={bg.src}
+                  alt={bg.label}
                   className="w-full h-full object-cover rounded-xl"
                 />
               </div>
             ))}
           </div>
 
-          {/* Main Image or 3D View */}
-          <div className="relative flex-1 flex xl:items-center justify-center">
-            {show3DView ? (
-              <ModelViewer modelPath="/Home/black_frame_acrylic.glb" />
+          <div
+            ref={canvasContainerRef}
+            className="w-full md:max-w-[800px] flex justify-center items-center"
+          >
+            {showCanvas ? (
+              <CanvasImageComposer
+                key={`${selectedBackground}-${product.product_image_1}`}
+                backgroundUrl={selectedBackground}
+                overlayUrl={`${ImageBaseUrl}${product.product_image_1}`}
+                overlayX={canvasSize.width * 0.4}
+                overlayY={canvasSize.height * 0.08}
+                overlayWidth={canvasSize.width * 0.1825}
+                overlayHeight={canvasSize.height * 0.35}
+                backgroundWidth={canvasSize.width}
+                backgroundHeight={canvasSize.height}
+              />
             ) : (
-              <div className="relative inline-block">
-                <img
-                  ref={imageRef}
-                  src={`${ImageBaseUrl}${selectedImage}`}
-                  alt={product.product_name}
-                  className={`object-cover rounded-md ${
-                    imageSize === "small"
-                      ? "max-w-[200px] max-h-[300px]"
-                      : imageSize === "medium"
-                      ? "max-w-[400px] max-h-[600px]"
-                      : imageSize === "large"
-                      ? "max-w-[600px] max-h-[900px]"
-                      : "max-w-[800px] max-h-[1200px]"
-                  } ${
-                    imageShape === "square"
-                      ? "aspect-square"
-                      : imageShape === "rectangle"
-                      ? "aspect-[4/3]"
-                      : imageShape === "panorama"
-                      ? "aspect-[16/9]"
-                      : imageShape === "panoramaWide"
-                      ? "aspect-[10/16]"
-                      : ""
-                  }`}
-                  style={{
-                    border: `10px solid ${selectedColor}`,
-                    boxSizing: "border-box",
-                  }}
+              <div className="w-full h-[200px] md:h-[500px] rounded-md overflow-hidden">
+                <ThreeImageViewer
+                  imageUrl={`${ImageBaseUrl}${product.product_image_1}`}
+                  selectedMaterial={selectedMaterial}
+                  imageShape={imageShape}
+                  frameColor={selectedColor}
                 />
               </div>
             )}
+          </div>
 
-            {/* Floating Buttons */}
-            <div className="hidden md:flex absolute top-4 right-4 flex-col gap-3 z-10">
-              <button className="w-10 h-10 rounded-full bg-white shadow hover:bg-gray-100 flex items-center justify-center">
-                <AiOutlineHeart className="text-xl" />
-              </button>
-              <button
-                onClick={handleZoomClick}
-                className="w-10 h-10 rounded-full bg-white shadow hover:bg-gray-100 flex items-center justify-center"
-              >
-                <FiZoomIn className="text-xl" />
-              </button>
-              <button
-                onClick={() => setShow3DView(!show3DView)}
-                className="w-10 h-10 rounded-full bg-white shadow hover:bg-gray-100 flex items-center justify-center"
-              >
-                <TbAugmentedReality className="text-xl" />
-              </button>
-            </div>
+          {/* Floating Buttons */}
+          <div className="hidden md:flex absolute top-4 right-4 flex-col gap-3 z-10">
+            <button className="w-10 h-10 cursor-pointer rounded-full bg-white shadow flex items-center justify-center">
+              <AiOutlineHeart className="text-xl" />
+            </button>
+            <button
+              onClick={handleZoomClick}
+              className="w-10 h-10 cursor-pointer rounded-full bg-white shadow flex items-center justify-center"
+            >
+              <FiZoomIn className="text-xl" />
+            </button>
+            <button className="w-10 h-10 cursor-pointer rounded-full bg-white shadow flex items-center justify-center">
+              <TbAugmentedReality className="text-xl" />
+            </button>
           </div>
         </div>
 
         {/* Right Section */}
-        <div className="w-full lg:w-1/2">
+        <div className="w-full lg:max-w-2xl">
           <h1 className="text-2xl sm:text-3xl font-bold mb-3">
             {product.product_name}
           </h1>
 
-          {/* Priority Production */}
           <div className="bg-[#0502F1] text-white p-5 rounded-md mb-5">
             <div className="flex justify-between items-center flex-wrap gap-4">
               <div>
                 <h1 className="text-2xl font-semibold">Priority Production</h1>
-                <button className="mt-2 bg-white text-black px-6 py-2 rounded-full font-semibold">
+                <button className="mt-2 cursor-pointer bg-white text-black px-6 py-2 rounded-full font-semibold">
                   BUY NOW
                 </button>
               </div>
@@ -194,17 +237,16 @@ const ProductDetails = () => {
             £{product.product_price}
           </div>
 
-          {/* Material Selection */}
           <div className="mb-5">
-            <p className="font-medium mb-2">Material:</p>
+            <h1 className="text-lg font-bold mb-2">Material : <span className="font-medium text-[#828388]" > {selectedMaterial}</span></h1>
             <div className="flex gap-2 flex-wrap">
               {materials.map((mat) => (
                 <button
                   key={mat}
                   onClick={() => setSelectedMaterial(mat)}
-                  className={`px-4 py-1 rounded border ${
+                  className={`px-4 cursor-pointer py-1 rounded border ${
                     selectedMaterial === mat
-                      ? "bg-black text-white"
+                      ? "bg-[#403C3C] text-white"
                       : "bg-gray-100 text-gray-700"
                   }`}
                 >
@@ -214,47 +256,35 @@ const ProductDetails = () => {
             </div>
           </div>
 
-          {/* Size Selection */}
           <div className="mb-5">
-            <p className="font-medium mb-2">Size:</p>
+            <h1 className="text-lg font-bold mb-2">Size : <span className="font-medium text-[#828388]" > {selectedSize}</span></h1>
             <div className="flex gap-2 flex-wrap">
-              {[
-                { label: "Small 200 × 300mm", value: "small" },
-                { label: "Medium 400 × 600mm", value: "medium" },
-                { label: "Large 600 × 900mm", value: "large" },
-                { label: "XLarge 800 × 1200mm", value: "xlarge" },
-              ].map((size) => (
+              {imagesize.map((size) => (
                 <button
-                  key={size.value}
-                  onClick={() => setImageSize(size.value)}
-                  className={`px-4 py-1 rounded border ${
-                    imageSize === size.value
-                      ? "bg-black text-white"
+                  key={size}
+                  onClick={() => setSelectedSize(size)}
+                  className={`px-4 cursor-pointer py-1 rounded border ${
+                    selectedSize === size
+                      ? "bg-[#403C3C] text-white"
                       : "bg-gray-100 text-gray-700"
                   }`}
                 >
-                  {size.label}
+                  {size}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Shape Selection */}
           <div className="mb-5">
-            <p className="font-medium mb-2">Image Shape:</p>
+            <h1 className="text-lg font-bold mb-2">Image Shape : <span className="font-medium text-[#828388] " > {imageShape}</span></h1>
             <div className="flex gap-2 flex-wrap">
-              {[
-                { label: "Square", value: "square" },
-                { label: "Rectangle", value: "rectangle" },
-                { label: "Panorama", value: "panorama" },
-                { label: "PanoramaWide", value: "panoramaWide" },
-              ].map((shape) => (
+              {imageShapes.map((shape) => (
                 <button
                   key={shape.value}
                   onClick={() => setImageShape(shape.value)}
-                  className={`px-4 py-1 rounded border ${
+                  className={`px-4 py-1 rounded cursor-pointer border ${
                     imageShape === shape.value
-                      ? "bg-black text-white"
+                      ? "bg-[#403C3C] text-white"
                       : "bg-gray-100 text-gray-700"
                   }`}
                 >
@@ -264,64 +294,119 @@ const ProductDetails = () => {
             </div>
           </div>
 
-          {/* Frame Colors */}
           <div className="mb-5">
-            <p className="font-medium mb-2">Frame Border:</p>
+            <h1 className="text-lg font-bold mb-2">Frame Border:</h1>
             <div className="flex flex-wrap gap-2">
               {frameColors.map((color) => (
                 <button
                   key={color}
                   onClick={() => setSelectedColor(color)}
                   style={{ backgroundColor: color }}
-                  className={`w-8 h-8 rounded border-2 ${
+                  className={`w-10 h-10 cursor-pointer rounded border-2 ${
                     selectedColor === color ? "border-black" : "border-gray-300"
                   }`}
-                />
+                ></button>
               ))}
             </div>
           </div>
 
-          {/* Quantity */}
-          <div className="flex items-center gap-4 mb-6">
-            <p className="font-medium">Quantity:</p>
-            <div className="flex items-center border rounded">
-              <button
-                onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                className="px-3 py-1 text-xl border-r"
-              >
-                -
-              </button>
-              <input
-                type="number"
-                value={quantity}
-                onChange={(e) =>
-                  setQuantity(Math.max(1, parseInt(e.target.value) || 1))
-                }
-                className="w-12 text-center outline-none"
-              />
-              <button
-                onClick={() => setQuantity((q) => q + 1)}
-                className="px-3 py-1 text-xl border-l"
-              >
-                +
-              </button>
+          <div className="mb-6">
+            <h1 className="text-lg font-bold mb-2">Quantity:</h1>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center border-2 border-[#828388] rounded p-3">
+                <button
+                  onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                  className="px-3 cursor-pointer py-1 text-md"
+                >
+                  <FiMinus className="text-[#828388]" />
+                </button>
+                <input
+                  type="number"
+                  value={quantity}
+                  onChange={(e) =>
+                    setQuantity(Math.max(1, parseInt(e.target.value) || 1))
+                  }
+                  className="w-20 input-no-spinner text-center outline-none"
+                />
+                <button
+                  onClick={() => setQuantity((q) => q + 1)}
+                  className="px-3 cursor-pointer py-1 text-md"
+                >
+                  <FiPlus className="text-[#828388]" />
+                </button>
+              </div>
             </div>
           </div>
 
-          <button className="w-full bg-black text-white py-3 rounded-md mb-3 hover:bg-gray-800 transition">
+          <button className="w-full cursor-pointer border-2 border-[#5C37E7] bg-white text-[#5C37E7] font-bold py-3 rounded-md mb-3 hover:bg-[#5C37E7] hover:text-white transition">
             Add to Cart
           </button>
-          <button className="w-full bg-indigo-600 text-white py-3 rounded-md hover:bg-indigo-700 transition">
-            Buy with ShopPay
+          <button className="w-full font-semibold cursor-pointer bg-[#5C37E7] text-white py-3 rounded-md hover:bg-indigo-700 transition">
+            Buy with Shop
+            <span className="bg-white text-[#5C37E7] mx-1 px-1 text-center rounded">
+              Pay
+            </span>
           </button>
 
-          <div className="mt-6 text-sm text-gray-600 flex gap-4 flex-wrap">
-            <span>Visa</span>
-            <span>Mastercard</span>
-            <span>PayPal</span>
-            <span>Amex</span>
-            <span>GPay</span>
-            <span>ApplePay</span>
+          <div className="mt-6">
+            <h1 className="text-lg font-bold mb-2">Payment and security:</h1>
+            <img
+              src={Shopify.src}
+              alt="Shopify"
+              className="w-24 object-cover"
+            />
+
+            <div className="mt-2 text-sm text-gray-600 flex gap-2">
+              <span>
+                <img src={Visa.src} alt="Visa" className="w-16 object-cover" />
+              </span>
+              <span>
+                <img
+                  src={Rupay.src}
+                  alt="Rupay"
+                  className="w-16 object-cover"
+                />
+              </span>
+              <span>
+                <img
+                  src={PayPal.src}
+                  alt="PayPal"
+                  className="w-16 object-cover"
+                />
+              </span>
+              <span>
+                <img src={Ipay.src} alt="Ipay" className="w-16 object-cover" />
+              </span>
+              <span>
+                <img src={Gpay.src} alt="Gpay" className="w-16 object-cover" />
+              </span>
+            </div>
+
+            <div className="mt-10 text-sm text-gray-600 flex items-center gap-2">
+              <span>
+                <img src={Links.src} alt="Links" className="w-12 object-cover" />
+              </span>
+              <span>
+                <img
+                  src={Meta.src}
+                  alt="Meta"
+                  className="w-10 object-cover"
+                />
+              </span>
+              <span>
+                <img
+                  src={Twitter.src}
+                  alt="Twitter"
+                  className="w-10 object-cover"
+                />
+              </span>
+              <span>
+                <img src={Pintrest.src} alt="Pintrest" className="w-10 object-cover" />
+              </span>
+              <span>
+                <img src={LinkedIn.src} alt="LinkedIn" className="w-10 object-cover" />
+              </span>
+            </div>
           </div>
         </div>
       </div>
