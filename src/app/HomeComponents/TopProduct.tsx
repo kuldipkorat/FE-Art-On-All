@@ -49,22 +49,27 @@ const TopProduct: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {products.map((product) => (
               <Link
-              href={{
-                pathname: "/ProductDetails",
-                query: { product: JSON.stringify(product) },
-              }}
-              className="block"
-            >
-            
-                <div className="p-4 rounded-lg cursor-pointer transition duration-300  hover:shadow-lg">
-                  <img
-                    src={`${ImageBaseUrl}${product.product_image_1}`}
-                    alt={product.product_name}
-                    className="w-full object-cover rounded-md mb-4 h-60"
-                  />
+                href={{
+                  pathname: "/ProductDetails",
+                  query: { product: JSON.stringify(product) },
+                }}
+                className="block"
+              >
+                <div className="p-4 rounded-lg cursor-pointer transition duration-300">
+                  <div className="overflow-hidden rounded-md shadow-xl shadow-gray-400 mb-4">
+                    <img
+                      src={`${ImageBaseUrl}${product.product_image_1}`}
+                      alt={product.product_name}
+                      className="w-full object-cover h-60 transform transition-transform duration-500 ease-in-out hover:scale-110"
+                    />
+                  </div>
                   <div className="text-center">
-                    <h3 className="text-xl font-semibold mb-2">{product.product_name}</h3>
-                    <p className="text-lg font-bold mb-4">From ₹{product.product_price}</p>
+                    <h3 className="text-xl font-semibold mb-2">
+                      {product.product_name}
+                    </h3>
+                    <p className="text-lg font-bold mb-4">
+                      From ₹{product.product_price}
+                    </p>
                   </div>
                 </div>
               </Link>

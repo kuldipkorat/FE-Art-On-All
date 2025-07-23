@@ -4,16 +4,19 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import { ImageBaseUrl } from "../Api";
 
-// import CanvasImageComposer from "../HomeComponents/CanvasImageComposer";
-import OfficeImage from "../../../public/Home/office_view.avif";
-import LivingRoomImage from "../../../public/Home/living_room.avif";
-import StudyRoomImage from "../../../public/Home/study_room.avif";
-// import ThreeImageViewer from "../HomeComponents/ThreeImageViewer";
+// import OfficeImage from "../../../public/Home/office_view.avif";
+// import LivingRoomImage from "../../../public/Home/living_room.avif";
+// import StudyRoomImage from "../../../public/Home/study_room.avif";
+import First3dIcon from "../../../public/Product/tabler_rotate_3d.png";
+
+import Livingroom from "../../../public/Product/livingroom.jpg";
+import Sofaroom from "../../../public/Product/sofa.jpg";
+import Hallroom from "../../../public/Product/hall.jpg";
+import Studyroom from "../../../public/Product/studyroom.jpg";
 
 import { AiOutlineHeart } from "react-icons/ai";
-import { FiZoomIn, FiPlus } from "react-icons/fi";
+import { FiZoomIn, FiPlus, FiMinus } from "react-icons/fi";
 import { TbAugmentedReality } from "react-icons/tb";
-import { FiMinus } from "react-icons/fi";
 
 import Shopify from "../../../public/Product/shopify.png";
 import Visa from "../../../public/Product/visa.png";
@@ -22,15 +25,23 @@ import PayPal from "../../../public/Product/paypal.png";
 import Ipay from "../../../public/Product/ipay.png";
 import Gpay from "../../../public/Product/gpay.png";
 
-import Links from "../../../public/Product/link.png"
-import Meta from "../../../public/Product/meta.png"
-import Twitter from "../../../public/Product/twitter.png"
-import Pintrest from "../../../public/Product/social.png"
-import LinkedIn from "../../../public/Product/linkedin.png"
+import Links from "../../../public/Product/link.png";
+import Meta from "../../../public/Product/meta.png";
+import Twitter from "../../../public/Product/twitter.png";
+import Pintrest from "../../../public/Product/social.png";
+import LinkedIn from "../../../public/Product/linkedin.png";
+
+import Image from "next/image";
 
 import dynamic from "next/dynamic";
-const ThreeImageViewer = dynamic(() => import("../HomeComponents/ThreeImageViewer"), { ssr: false });
-const CanvasImageComposer = dynamic(() => import("../HomeComponents/CanvasImageComposer"), { ssr: false });
+const ThreeImageViewer = dynamic(
+  () => import("../HomeComponents/ThreeImageViewer"),
+  { ssr: false }
+);
+const CanvasImageComposer = dynamic(
+  () => import("../HomeComponents/CanvasImageComposer"),
+  { ssr: false }
+);
 
 interface Product {
   _id: number | string;
@@ -46,7 +57,7 @@ const ProductDetails = () => {
   const [showCanvas, setShowCanvas] = useState<boolean>(false);
   const [selectedColor, setSelectedColor] = useState("#E5CFC6");
   const [quantity, setQuantity] = useState(1);
-  const [selectedMaterial, setSelectedMaterial] = useState("Acrylic");
+  const [selectedMaterial, setSelectedMaterial] = useState("Wood");
   const [selectedSize, setSelectedSize] = useState("Small 200 x 300mm");
   const [imageShape, setImageShape] = useState("Square");
   const imageRef = useRef<HTMLDivElement>(null);
@@ -61,11 +72,13 @@ const ProductDetails = () => {
     "#F3D7CA",
     "#FAF1E4",
   ];
-
-  const materials = ["Acrylic", "Wood", "Metal", "Canvas", "Mirror"];
-
-  const imagesize = ["Small 200 x 300mm", "Medium 400 x 600mm", "Large 600 x 900mm", "XLarge 800 x 1200mm"];
-
+  const materials = ["Wood", "Metal", "Canvas"];
+  const imagesize = [
+    "Small 200 x 300mm",
+    "Medium 400 x 600mm",
+    "Large 600 x 900mm",
+    "XLarge 800 x 1200mm",
+  ];
   const imageShapes = [
     { label: "Square", value: "Square" },
     { label: "Column", value: "Column" },
@@ -100,9 +113,8 @@ const ProductDetails = () => {
   }, []);
 
   const handleZoomClick = () => {
-    if (imageRef.current) {
-      if (imageRef.current.requestFullscreen)
-        imageRef.current.requestFullscreen();
+    if (imageRef.current && imageRef.current.requestFullscreen) {
+      imageRef.current.requestFullscreen();
     }
   };
 
@@ -114,10 +126,17 @@ const ProductDetails = () => {
     );
   }
 
+  // const backgroundImages = [
+  //   { label: "Living Room", src: LivingRoomImage.src },
+  //   { label: "Office", src: OfficeImage.src },
+  //   { label: "Study Room", src: StudyRoomImage.src },
+  // ];
+
   const backgroundImages = [
-    { label: "Living Room", src: LivingRoomImage.src },
-    { label: "Office", src: OfficeImage.src },
-    { label: "Study Room", src: StudyRoomImage.src },
+    { label: "Living Room", src: Livingroom.src },
+    { label: "Sofa Room", src: Sofaroom.src },
+    { label: "Hall Room", src: Hallroom.src },
+    { label: "Study Room", src: Studyroom.src },
   ];
 
   return (
@@ -134,7 +153,7 @@ const ProductDetails = () => {
                 setShowCanvas(false);
                 setSelectedBackground("");
               }}
-              className={`w-16 h-16 border-2 rounded-xl overflow-hidden cursor-pointer p-1 ${
+              className={`w-16 h-16 border-2 rounded-xl overflow-hidden cursor-pointer p-1 relative ${
                 !showCanvas ? "border-blue-600" : "border-transparent"
               }`}
             >
@@ -143,6 +162,17 @@ const ProductDetails = () => {
                 alt="Product"
                 className="w-full h-full object-cover rounded-xl"
               />
+              <div className="absolute inset-0">
+                <div className="w-full h-full bg-[rgba(0,0,0,0.5)] flex items-center justify-center">
+                  <Image
+                    src={First3dIcon}
+                    alt="3D Icon"
+                    width={40}
+                    height={40}
+                    className="opacity-100"
+                  />
+                </div>
+              </div>
             </div>
             {backgroundImages.map((bg, idx) => (
               <div
@@ -171,17 +201,28 @@ const ProductDetails = () => {
             className="w-full md:max-w-[800px] flex justify-center items-center"
           >
             {showCanvas ? (
-              <CanvasImageComposer
-                key={`${selectedBackground}-${product.product_image_1}`}
-                backgroundUrl={selectedBackground}
-                overlayUrl={`${ImageBaseUrl}${product.product_image_1}`}
-                overlayX={canvasSize.width * 0.4}
-                overlayY={canvasSize.height * 0.08}
-                overlayWidth={canvasSize.width * 0.1825}
-                overlayHeight={canvasSize.height * 0.35}
-                backgroundWidth={canvasSize.width}
-                backgroundHeight={canvasSize.height}
-              />
+              // <CanvasImageComposer
+              //   key={`${selectedBackground}-${product.product_image_1}`}
+              //   backgroundUrl={selectedBackground}
+              //   overlayUrl={`${ImageBaseUrl}${product.product_image_1}`}
+              //   overlayX={canvasSize.width * 0.4}
+              //   overlayY={canvasSize.height * 0.08}
+              //   overlayWidth={canvasSize.width * 0.1825}
+              //   overlayHeight={canvasSize.height * 0.35}
+              //   backgroundWidth={canvasSize.width}
+              //   backgroundHeight={canvasSize.height}
+              // />
+              <div className="">
+                {selectedBackground && (
+                  <Image
+                    src={selectedBackground}
+                    alt="2D Image"
+                    width={canvasSize.width}
+                    height={canvasSize.height}
+                    className="rounded-md object-contain"
+                  />
+                )}
+              </div>
             ) : (
               <div className="w-full h-[200px] md:h-[500px] rounded-md overflow-hidden">
                 <ThreeImageViewer
@@ -194,7 +235,6 @@ const ProductDetails = () => {
             )}
           </div>
 
-          {/* Floating Buttons */}
           <div className="hidden md:flex absolute top-4 right-4 flex-col gap-3 z-10">
             <button className="w-10 h-10 cursor-pointer rounded-full bg-white shadow flex items-center justify-center">
               <AiOutlineHeart className="text-xl" />
@@ -216,7 +256,6 @@ const ProductDetails = () => {
           <h1 className="text-2xl sm:text-3xl font-bold mb-3">
             {product.product_name}
           </h1>
-
           <div className="bg-[#0502F1] text-white p-5 rounded-md mb-5">
             <div className="flex justify-between items-center flex-wrap gap-4">
               <div>
@@ -238,7 +277,12 @@ const ProductDetails = () => {
           </div>
 
           <div className="mb-5">
-            <h1 className="text-lg font-bold mb-2">Material : <span className="font-medium text-[#828388]" > {selectedMaterial}</span></h1>
+            <h1 className="text-lg font-bold mb-2">
+              Material:{" "}
+              <span className="font-medium text-[#828388]">
+                {selectedMaterial}
+              </span>
+            </h1>
             <div className="flex gap-2 flex-wrap">
               {materials.map((mat) => (
                 <button
@@ -257,7 +301,10 @@ const ProductDetails = () => {
           </div>
 
           <div className="mb-5">
-            <h1 className="text-lg font-bold mb-2">Size : <span className="font-medium text-[#828388]" > {selectedSize}</span></h1>
+            <h1 className="text-lg font-bold mb-2">
+              Size:{" "}
+              <span className="font-medium text-[#828388]">{selectedSize}</span>
+            </h1>
             <div className="flex gap-2 flex-wrap">
               {imagesize.map((size) => (
                 <button
@@ -276,7 +323,10 @@ const ProductDetails = () => {
           </div>
 
           <div className="mb-5">
-            <h1 className="text-lg font-bold mb-2">Image Shape : <span className="font-medium text-[#828388] " > {imageShape}</span></h1>
+            <h1 className="text-lg font-bold mb-2">
+              Image Shape:{" "}
+              <span className="font-medium text-[#828388]">{imageShape}</span>
+            </h1>
             <div className="flex gap-2 flex-wrap">
               {imageShapes.map((shape) => (
                 <button
@@ -342,7 +392,7 @@ const ProductDetails = () => {
             Add to Cart
           </button>
           <button className="w-full font-semibold cursor-pointer bg-[#5C37E7] text-white py-3 rounded-md hover:bg-indigo-700 transition">
-            Buy with Shop
+            Buy with Shop{" "}
             <span className="bg-white text-[#5C37E7] mx-1 px-1 text-center rounded">
               Pay
             </span>
@@ -355,57 +405,25 @@ const ProductDetails = () => {
               alt="Shopify"
               className="w-24 object-cover"
             />
-
             <div className="mt-2 text-sm text-gray-600 flex gap-2">
-              <span>
-                <img src={Visa.src} alt="Visa" className="w-16 object-cover" />
-              </span>
-              <span>
+              {[Visa, Rupay, PayPal, Ipay, Gpay].map((img, i) => (
                 <img
-                  src={Rupay.src}
-                  alt="Rupay"
+                  key={i}
+                  src={img.src}
+                  alt="pay"
                   className="w-16 object-cover"
                 />
-              </span>
-              <span>
-                <img
-                  src={PayPal.src}
-                  alt="PayPal"
-                  className="w-16 object-cover"
-                />
-              </span>
-              <span>
-                <img src={Ipay.src} alt="Ipay" className="w-16 object-cover" />
-              </span>
-              <span>
-                <img src={Gpay.src} alt="Gpay" className="w-16 object-cover" />
-              </span>
+              ))}
             </div>
-
             <div className="mt-10 text-sm text-gray-600 flex items-center gap-2">
-              <span>
-                <img src={Links.src} alt="Links" className="w-12 object-cover" />
-              </span>
-              <span>
+              {[Links, Meta, Twitter, Pintrest, LinkedIn].map((img, i) => (
                 <img
-                  src={Meta.src}
-                  alt="Meta"
+                  key={i}
+                  src={img.src}
+                  alt="social"
                   className="w-10 object-cover"
                 />
-              </span>
-              <span>
-                <img
-                  src={Twitter.src}
-                  alt="Twitter"
-                  className="w-10 object-cover"
-                />
-              </span>
-              <span>
-                <img src={Pintrest.src} alt="Pintrest" className="w-10 object-cover" />
-              </span>
-              <span>
-                <img src={LinkedIn.src} alt="LinkedIn" className="w-10 object-cover" />
-              </span>
+              ))}
             </div>
           </div>
         </div>

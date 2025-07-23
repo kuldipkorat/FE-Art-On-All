@@ -5,6 +5,10 @@
   font-style: normal;
 }
 
+.transition_div{
+  transition: all 1s ease-in-out;
+}
+
 /* Remove arrows/spinners from number input */
 .input-no-spinner::-webkit-inner-spin-button,
 .input-no-spinner::-webkit-outer-spin-button {

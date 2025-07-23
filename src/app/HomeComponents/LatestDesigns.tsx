@@ -71,11 +71,13 @@ const LatestDesigns: React.FC = () => {
                 className=""
               >
                 <div className="overflow-hidden cursor-pointer transition">
-                  <img
-                    src={`${ImageBaseUrl}${product.product_image_1}`}
-                    alt={product.product_name}
-                    className="w-full h-65 object-cover rounded-lg"
-                  />
+                  <div className="rounded-lg overflow-hidden">
+                    <img
+                      src={`${ImageBaseUrl}${product.product_image_1}`}
+                      alt={product.product_name}
+                      className="w-full h-65 object-cover  transform transition-transform duration-500 ease-in-out hover:scale-110"
+                    />
+                  </div>
                   <div className="text-center py-2">
                     <h3 className="text-sm font-semibold mb-1">
                       {product.product_name}
