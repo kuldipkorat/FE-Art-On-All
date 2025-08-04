@@ -158,8 +158,8 @@ const ViewerCanvas = ({
 
   return (
     <>
-      <ambientLight position={[0, 0, 5]} intensity={1.5} />
-      <directionalLight position={[0.5, 0.5, 6]} intensity={0.4} />
+      <ambientLight position={[0, 0, 5]} intensity={1.3} />
+      <directionalLight position={[0.5, 0.5, 6]} intensity={0.5} />
       <Suspense fallback={null}>
         <Model
           imageUrl={imageUrl}
