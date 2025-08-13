@@ -44,7 +44,7 @@ const HomePage: FC = () => {
     MainImage6,
   ];
   return (
-    <main className="bg-gray-900 text-white">
+    <main className="">
       {/* Hero Section */}
       <section className="relative w-full h-[70vh]">
         <Image
@@ -55,8 +55,8 @@ const HomePage: FC = () => {
           className="z-0"
         />
         <div className="absolute inset-0  bg-opacity-50 flex flex-col justify-center items-center z-10">
-          <h2 className="text-4xl font-bold mb-2">Metal Prints</h2>
-          <p className="mb-4">Lets Do Different - Direct Metal Prints</p>
+          <h2 className="text-4xl font-bold mb-2 text-white">Metal Prints</h2>
+          <p className="mb-4 text-white">Lets Do Different - Direct Metal Prints</p>
           <button className="bg-white text-black px-4 py-2 rounded">
             Shop Now
           </button>
@@ -77,7 +77,7 @@ const HomePage: FC = () => {
         ))}
       </section>
 
-      <section className="text-center py-10 bg-[#1F2532] text-white">
+      <section className="text-center py-10">
         <div className="container mx-auto">
           <h2 className="text-3xl font-semibold mb-10">
             1 PRINT - 4 MATERIALS

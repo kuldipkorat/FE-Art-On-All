@@ -3,6 +3,10 @@ import HomePage from "./HomePage";
 import TopProduct from "./TopProduct";
 import MainImage from "./MainImage";
 import LatestDesigns from "./LatestDesigns";
+import SearchArtSection from "./SearchArtSection";
+import RecentlyViewed from "./RecentlyViewed";
+import ImagesSection from "./ImagesSection";
+import HighlightFeatures from "./HighlightFeatures";
 
 const LandingPage = () => {
   return (
@@ -11,6 +15,10 @@ const LandingPage = () => {
       <TopProduct />
       <MainImage />
       <LatestDesigns/>
+      <SearchArtSection/>
+      <RecentlyViewed/>
+      <ImagesSection/>
+      <HighlightFeatures/>
     </>
   );
 };

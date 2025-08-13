@@ -130,12 +130,8 @@ export default function ProductDetails() {
   /* ------------------------------------------------------------------ */
   /* 6. AR deep-link (for QR & copy-link)                               */
   /* ------------------------------------------------------------------ */
-  const arDeepLink =
-    typeof window !== "undefined" && product
-      ? `${window.location.origin}/arview?${new URLSearchParams({
-          model: `${ImageBaseUrl}${product.product_model_glb || "metal.glb"}`,
-        }).toString()}`
-      : "";
+  const arDeepLink = "https://ar-view-seven.vercel.app/";
+
 
   /* ------------------------------------------------------------------ */
   /* 7. render                                                          */
@@ -148,7 +144,7 @@ export default function ProductDetails() {
     );
 
   return (
-    <div className="min-h-screen px-4 md:px-8 lg:px-12 py-8 bg-white">
+    <div className="min-h-screen px-4 md:px-8 lg:px-12 py-8">
       <div className="flex flex-col lg:flex-row gap-10">
         {/* LEFT ---------------------------------------------------------- */}
         <div
@@ -235,19 +231,19 @@ export default function ProductDetails() {
           {/* desktop icons */}
           <div className="hidden md:flex absolute top-4 right-4 flex-col gap-3 z-10">
             <button className="w-10 h-10 rounded-full bg-white shadow flex items-center justify-center cursor-pointer">
-              <AiOutlineHeart className="text-xl" />
+              <AiOutlineHeart className="text-xl text-black" />
             </button>
             <button
               onClick={handleZoomClick}
               className="w-10 h-10 rounded-full bg-white shadow flex items-center justify-center cursor-pointer"
             >
-              <FiZoomIn className="text-xl" />
+              <FiZoomIn className="text-xl text-black" />
             </button>
             <button
               onClick={() => setShowQRModal(true)}
               className="w-10 h-10 rounded-full bg-white shadow flex items-center justify-center cursor-pointer"
             >
-              <TbAugmentedReality className="text-xl" />
+              <TbAugmentedReality className="text-xl text-black" />
             </button>
           </div>
 
@@ -293,7 +289,7 @@ export default function ProductDetails() {
             </div>
           </div>
 
-          <div className="text-2xl font-bold text-gray-800 mb-5">
+          <div className="text-2xl font-bold mb-5">
             £{product.product_price}
           </div>
 

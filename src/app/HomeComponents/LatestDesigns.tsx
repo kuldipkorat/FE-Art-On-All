@@ -39,7 +39,7 @@ const LatestDesigns: React.FC = () => {
   if (!hasMounted) return null;
 
   return (
-    <section className="bg-[#1F2532] py-12 px-4 text-white">
+    <section className="py-12 px-4">
       <h2 className="text-center text-3xl font-bold mb-10">LATEST DESIGNS</h2>
 
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[250px_1fr] gap-8">
@@ -82,7 +82,7 @@ const LatestDesigns: React.FC = () => {
                     <h3 className="text-sm font-semibold mb-1">
                       {product.product_name}
                     </h3>
-                    <p className="text-sm text-gray-300">
+                    <p className="text-sm text-gray-600">
                       From ₹{product.product_price}
                     </p>
                   </div>
@@ -96,13 +96,13 @@ const LatestDesigns: React.FC = () => {
           )}
         </div>
       </div>
-
       {/* Button */}
-      <div className="text-center mt-10">
-        <button className="inline-flex items-center gap-2 bg-white text-black px-6 py-2 rounded-full hover:bg-gray-200 transition">
+      <div className="text-right mt-10">
+        <button className="inline-flex items-center gap-2 border-2 border-white text-white px-6 py-2 rounded-full transition">
           Shop More <FaArrowRight />
         </button>
       </div>
+
     </section>
   );
 };

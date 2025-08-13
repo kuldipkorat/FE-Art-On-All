@@ -2,7 +2,7 @@ import Axios from "axios";
 
 // --------------------------------------------------------------------------
 // ToDo : Base Url Server
-const BaseURL = "https://be-art-on-all.onrender.com/";
+const BaseURL = "http://localhost:4000/";
 // const BaseURL = "http://103.10.234.158:8800/";
 // --------------------------------------------------------------------------
 

@@ -3,6 +3,7 @@
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
 import Navbar from './HomeComponents/Navbaar';
+import Footer from './HomeComponents/Footer';
 import './globals.css';
 
 export default function RootLayout({ children }: { children: ReactNode }) {
@@ -17,6 +18,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body>
         {!shouldHideNavbar && <Navbar />}
         {children}
+        {!shouldHideNavbar && <Footer />}
       </body>
     </html>
   );

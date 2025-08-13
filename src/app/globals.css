@@ -1,11 +1,54 @@
 @import "tailwindcss";
 
+/* Default Theme (Light) */
+:root {
+  --bg-color: white;
+  --text-color: black;
+  --banner-bg: black;
+  --banner-text: white;
+  --nav-bg: white;
+  --nav-text: black;
+  --icon-color: #4b5563; /* Tailwind gray-600 */
+}
+
+/* Dark Theme */
+.dark-theme {
+  --bg-color: #242833; /* Tailwind gray-800 */
+  --text-color: white;
+  --banner-bg: #111827; /* Tailwind gray-900 */
+  --banner-text: white;
+  --nav-bg: #242833;
+  --nav-text: white;
+  --icon-color: #d1d5db; /* Tailwind gray-300 */
+}
+
+/* Apply Variables Globally */
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+/* Navbar Styling */
+.navbar-banner {
+  background-color: var(--banner-bg);
+  color: var(--banner-text);
+}
+
+.navbar-main {
+  background-color: var(--nav-bg);
+  color: var(--nav-text);
+}
+
+.navbar-icons {
+  color: var(--icon-color);
+}
+
 * {
   font-family: "Poppins", sans-serif;
   font-style: normal;
 }
 
-.transition_div{
+.transition_div {
   transition: all 1s ease-in-out;
 }
 
