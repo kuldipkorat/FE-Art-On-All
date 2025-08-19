@@ -103,7 +103,7 @@ export default function Navbar() {
 
         {/* Mobile Menu */}
         {menuOpen && (
-          <div className="bg-white dark:bg-gray-800 flex flex-col px-10 pb-4 space-y-2">
+          <div className="flex flex-col px-10 pb-4 space-y-2">
             <Link className="py-1 text-md" href="/" onClick={() => setMenuOpen(false)}>HOME</Link>
             <Link className="py-1 text-md" href="/shop" onClick={() => setMenuOpen(false)}>SHOP</Link>
             <Link className="py-1 text-md" href="/upload" onClick={() => setMenuOpen(false)}>UPLOAD IMAGE</Link>

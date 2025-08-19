@@ -132,7 +132,6 @@ export default function ProductDetails() {
   /* ------------------------------------------------------------------ */
   const arDeepLink = "https://ar-view-seven.vercel.app/";
 
-
   /* ------------------------------------------------------------------ */
   /* 7. render                                                          */
   /* ------------------------------------------------------------------ */
@@ -211,7 +210,7 @@ export default function ProductDetails() {
               )
             ) : (
               <div
-                className={`w-full h-[200px] md:h-[500px] rounded-md overflow-hidden ${
+                className={`w-full h-[400px] md:h-[500px] rounded-md overflow-hidden ${
                   isGrabbing ? "cursor-grabbing" : "cursor-grab"
                 }`}
                 onMouseDown={handleMouseDown}
@@ -249,18 +248,18 @@ export default function ProductDetails() {
 
           {/* mobile icons */}
           <div className="flex md:hidden gap-3 z-50">
-            <button className="w-10 h-10 rounded-full bg-white shadow flex items-center justify-center">
+            <button className="w-10 h-10 rounded-full bg-white text-black shadow flex items-center justify-center">
               <AiOutlineHeart className="text-xl" />
             </button>
             <button
               onClick={handleZoomClick}
-              className="w-10 h-10 rounded-full bg-white shadow flex items-center justify-center"
+              className="w-10 h-10 rounded-full bg-white text-black shadow flex items-center justify-center"
             >
               <FiZoomIn className="text-xl" />
             </button>
             <button
               onClick={() => setShowQRModal(true)}
-              className="w-10 h-10 rounded-full bg-white shadow flex items-center justify-center"
+              className="w-10 h-10 rounded-full bg-white text-black shadow flex items-center justify-center"
             >
               <TbAugmentedReality className="text-xl" />
             </button>
@@ -274,7 +273,7 @@ export default function ProductDetails() {
           </h1>
 
           <div className="bg-[#0502F1] text-white p-5 rounded-md mb-5">
-            <div className="flex justify-between items-center flex-wrap gap-4">
+            <div className="flex justify-between items-center gap-4">
               <div>
                 <h1 className="text-2xl font-semibold">Priority Production</h1>
                 <button className="mt-2 bg-white text-black px-6 py-2 rounded-full font-semibold">
@@ -289,8 +288,20 @@ export default function ProductDetails() {
             </div>
           </div>
 
-          <div className="text-2xl font-bold mb-5">
-            £{product.product_price}
+          <div className="mb-5">
+            <div className="text-2xl font-bold mb-1">
+              £ {product.product_price}
+            </div>
+            <span className="text-md">Tax included.</span>
+          </div>
+
+          <div className="mb-5">
+            <p className="text-md mb-4">
+              Add a pop of colour to your kitchen or café with this bold and
+              quirky fried egg acrylic print. Printed on premium 5mm acrylic,
+              this artwork offers a crystal-clear, high-gloss...
+            </p>
+            <hr />
           </div>
 
           {/* material */}
@@ -301,12 +312,12 @@ export default function ProductDetails() {
                 {selectedMaterial}
               </span>
             </h1>
-            <div className="flex gap-2 flex-wrap">
+            <div className="flex gap-2 flex-wrap mb-5">
               {materials.map((m) => (
                 <button
                   key={m}
                   onClick={() => setSelectedMaterial(m)}
-                  className={`px-4 py-1 rounded border cursor-pointer ${
+                  className={`px-4 py-1 rounded border cursor-pointer text-sm ${
                     selectedMaterial === m
                       ? "bg-[#403C3C] text-white"
                       : "bg-gray-100 text-gray-700"
@@ -316,6 +327,7 @@ export default function ProductDetails() {
                 </button>
               ))}
             </div>
+            <hr />
           </div>
 
           {/* size */}
@@ -324,12 +336,12 @@ export default function ProductDetails() {
               Size:{" "}
               <span className="font-medium text-[#828388]">{selectedSize}</span>
             </h1>
-            <div className="flex gap-2 flex-wrap">
+            <div className="flex gap-2 flex-wrap mb-4">
               {sizes.map((s) => (
                 <button
                   key={s}
                   onClick={() => setSelectedSize(s)}
-                  className={`px-4 py-1 rounded border cursor-pointer ${
+                  className={`px-4 py-1 rounded border cursor-pointer text-sm ${
                     selectedSize === s
                       ? "bg-[#403C3C] text-white"
                       : "bg-gray-100 text-gray-700"
@@ -339,6 +351,7 @@ export default function ProductDetails() {
                 </button>
               ))}
             </div>
+            <hr />
           </div>
 
           {/* shape */}
@@ -347,12 +360,12 @@ export default function ProductDetails() {
               Image Shape:{" "}
               <span className="font-medium text-[#828388]">{imageShape}</span>
             </h1>
-            <div className="flex gap-2 flex-wrap">
+            <div className="flex gap-2 flex-wrap mb-4">
               {shapes.map((sh) => (
                 <button
                   key={sh.value}
                   onClick={() => setImageShape(sh.value)}
-                  className={`px-4 py-1 rounded border cursor-pointer ${
+                  className={`px-4 py-1 rounded border cursor-pointer text-sm ${
                     imageShape === sh.value
                       ? "bg-[#403C3C] text-white"
                       : "bg-gray-100 text-gray-700"
@@ -362,6 +375,7 @@ export default function ProductDetails() {
                 </button>
               ))}
             </div>
+            <hr />
           </div>
 
           {/* frame color */}

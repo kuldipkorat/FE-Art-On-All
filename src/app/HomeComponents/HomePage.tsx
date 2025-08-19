@@ -56,7 +56,9 @@ const HomePage: FC = () => {
         />
         <div className="absolute inset-0  bg-opacity-50 flex flex-col justify-center items-center z-10">
           <h2 className="text-4xl font-bold mb-2 text-white">Metal Prints</h2>
-          <p className="mb-4 text-white">Lets Do Different - Direct Metal Prints</p>
+          <p className="mb-4 text-white">
+            Lets Do Different - Direct Metal Prints
+          </p>
           <button className="bg-white text-black px-4 py-2 rounded">
             Shop Now
           </button>
@@ -83,7 +85,7 @@ const HomePage: FC = () => {
             1 PRINT - 4 MATERIALS
           </h2>
 
-          <div className="flex flex-wrap justify-center gap-3 px-4">
+          <div className="hidden md:flex justify-center gap-3 px-4">
             {/* Left Column */}
             <div className="flex flex-col gap-3">
               <div>
@@ -138,6 +140,64 @@ const HomePage: FC = () => {
                   width={320}
                   height={300}
                 />
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Section */}
+          <div className="flex md:hidden flex-col items-center gap-3 px-4">
+            <div>
+              <Image
+                src={Metal}
+                alt="Metal Print"
+                width={600}
+                height={350}
+                className="w-full h-auto"
+              />
+            </div>
+            <div className="flex justify-center gap-3">
+              {/* Left Side */}
+              <div className="flex flex-col gap-3">
+                <div>
+                  <Image
+                    src={Acrylic}
+                    alt="Acrylic Print"
+                    width={320}
+                    height={300}
+                    className="w-full h-auto"
+                  />
+                </div>
+                <div>
+                  <Image
+                    src={Canvas}
+                    alt="Canvas Print"
+                    width={320}
+                    height={300}
+                    className="w-full h-auto"
+                  />
+                </div>
+              </div>
+
+              {/* Right Side */}
+              <div className="flex flex-col gap-3">
+                <div>
+                  <Image
+                    src={ThePrint}
+                    alt="The Print"
+                    width={320}
+                    height={300}
+                    className="w-full h-auto"
+                  />
+                </div>
+                <div>
+                  <Image
+                    src={AR_Preview}
+                    alt="AR Previews"
+                    width={320}
+                    height={300}
+                    className="w-full h-auto"
+                  />
+                </div>
               </div>
             </div>
           </div>
